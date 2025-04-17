@@ -3,9 +3,9 @@ import { Text } from './Text';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import theme from '../theme';
 import * as yup from 'yup';
-
-
-
+import { useSignIn } from '../hooks/useSignIn';
+import { ApolloError, isApolloError } from '@apollo/client';
+import { useState } from 'react';
 
 const styles = StyleSheet.create({
   formInput: {
@@ -21,16 +21,41 @@ const formSchema = yup.object().shape({
   password: yup.string().required('Password is required')
 });
 
+type FormValues = yup.InferType<typeof formSchema>;
+
 const SignIn = () => {
+  const signIn = useSignIn();
+  const [signInError, setSignInError] = useState('');
+
+  const handleSubmit = async (values: FormValues) => {
+    const { username, password } = values;
+    try {
+      const data = await signIn({ username, password });
+    } catch (e) {
+      if (e instanceof ApolloError) {
+        notificateError(e);
+        return
+      }
+      throw e;
+    }
+
+    function notificateError(e: ApolloError) {
+      setSignInError(e.message);
+      setTimeout(() => {
+        setSignInError('');
+      }, 2000);
+    }
+  };
+
   const formik = useFormik({
     initialValues: { username: '', password: '' },
-    onSubmit: values =>
-      console.log(`username: ${values.username}, password: ${values.password}`),
+    onSubmit: handleSubmit,
     validationSchema: formSchema
   });
 
   return (
     <View style={{ padding: 16, gap: 20, backgroundColor: 'white' }}>
+      {signInError && <Text style={{ color: theme.colors.error }}>{signInError}</Text>}
       <TextInput
         style={[
           styles.formInput,
