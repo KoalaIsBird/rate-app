@@ -1,7 +1,7 @@
 import { Image, Pressable, View } from 'react-native';
-import { Repository } from '../types';
 import { Text } from './Text';
 import theme from '../theme';
+import {  GetRepositoriesQuery, Repository, Review } from '../__generated__/graphql';
 
 const toThousandNotation = (number: number): string => {
   const n = Math.abs(Math.round(number));
@@ -20,14 +20,20 @@ const NumberItem = ({ label, number }: { label: string; number: number }) => {
   );
 };
 
-export const RepositoryItem = ({ repo }: { repo: Repository }) => {
+interface Props {
+  repo: GetRepositoriesQuery['repositories']['edges'][number]['node'];
+}
+
+export const RepositoryItem = ({ repo }: Props) => {
   return (
-    <View style={{ backgroundColor: 'white', padding: 8, gap: 16 }}>
+    <View testID='repositoryItem' style={{ backgroundColor: 'white', padding: 8, gap: 16 }}>
       <View style={{ flexDirection: 'row', gap: 16 }}>
-        <Image
-          source={{ uri: repo.ownerAvatarUrl }}
-          style={{ width: 50, height: 50, borderRadius: 4 }}
-        />
+        {repo.ownerAvatarUrl && (
+          <Image
+            source={{ uri: repo.ownerAvatarUrl }}
+            style={{ width: 50, height: 50, borderRadius: 4 }}
+          />
+        )}
         <View style={{ flex: 1, rowGap: 8 }}>
           <Text fontWeight='bold' fontSize='subheading'>
             {repo.fullName}
@@ -55,8 +61,12 @@ export const RepositoryItem = ({ repo }: { repo: Repository }) => {
         </View>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-        <NumberItem label='Stars' number={repo.stargazersCount} />
-        <NumberItem label='Forks' number={repo.forksCount} />
+        {repo.stargazersCount && repo.forksCount && (
+          <>
+            <NumberItem label='Stars' number={repo.stargazersCount} />
+            <NumberItem label='Forks' number={repo.forksCount} />
+          </>
+        )}
         <NumberItem label='Reviews' number={repo.reviewCount} />
         <NumberItem label='Rating' number={repo.ratingAverage} />
       </View>
