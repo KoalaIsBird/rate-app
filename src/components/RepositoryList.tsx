@@ -1,15 +1,14 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import useRepositories from '../hooks/useRepositories';
 import { RepositoryItem } from './RepositoryItem';
 import { GetRepositoriesQuery } from '../__generated__/graphql';
+import { ItemSeparator } from './ItemSeparator';
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   separator: {
     height: 10
   }
 });
-
-const ItemSeparator = () => <View style={styles.separator} />;
 
 interface Props {
   repositories:

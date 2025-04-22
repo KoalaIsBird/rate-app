@@ -22,5 +22,5 @@ export default {
   },
   web: {
     favicon: './assets/favicon.png'
-  },
+  }
 };

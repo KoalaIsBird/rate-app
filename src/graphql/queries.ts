@@ -30,3 +30,47 @@ export const ME = gql(`
     }
   }
 `);
+
+export const GET_REPO = gql(`
+  query GetRepository($repositoryId: ID!) {
+  repository(id: $repositoryId) {
+    description
+    forksCount
+    fullName
+    id
+    language
+    ownerAvatarUrl
+    ownerName
+    ratingAverage
+    reviewCount
+    stargazersCount
+    url
+  }
+}
+  `);
+export const GET_REVIEWS = gql(`
+query GetReviews($id: ID!){
+  repository(id: $id) {
+    id
+    fullName
+    reviews {
+      edges {
+        node {
+          ...ReviewFields
+        }
+      }
+    }
+  }
+}
+
+fragment ReviewFields on Review {
+          id
+          text
+          rating
+          createdAt
+          user {
+            id
+            username
+          }
+        }
+`);

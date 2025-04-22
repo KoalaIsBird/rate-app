@@ -9,6 +9,7 @@ const theme = {
     appBackground: '#e1e4e8',
     error: '#d73a4a'
   },
+  spacing: { listGap: 4 },
   fontSizes: {
     body: 14,
     subheading: 16

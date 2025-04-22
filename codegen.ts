@@ -13,10 +13,12 @@ const config: CodegenConfig = {
       plugins: [],
       presetConfig: {
         gqlTagName: 'gql',
+        fragmentMasking: false,
+
       }
     }
   },
-  // ignoreNoDocuments: true,
+  ignoreNoDocuments: true,
 };
 
 export default config;

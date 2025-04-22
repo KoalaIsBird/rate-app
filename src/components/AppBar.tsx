@@ -23,10 +23,9 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const authStorage = useAuthStorage();
   const logout = useLogout();
-  const { data } = useQuery<{ me: { id: string; username: string } | null }>(ME);
+  const { data } = useQuery(ME);
 
   return (
     <View style={styles.container}>
@@ -34,6 +33,11 @@ const AppBar = () => {
         <Link to='/'>
           <Text style={styles.headerText}>Repositories</Text>
         </Link>
+        {data?.me && (
+          <Link to='/review'>
+            <Text style={styles.headerText}>Review</Text>
+          </Link>
+        )}
         {data?.me ? (
           <Pressable onPress={logout}>
             <Text style={styles.headerText}>Sign Out</Text>
