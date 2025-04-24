@@ -1,19 +1,19 @@
 import { useMutation, isApolloError } from '@apollo/client';
 import { Formik, FormikHandlers, FormikProps, FormikValues } from 'formik';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode, ReactPortal } from 'react';
 import { View, TextInput, Pressable } from 'react-native';
 import { useNavigate } from 'react-router-native';
 import { style } from 'twrnc';
-import { ADD_REVIEW } from './graphql/mutations';
+import { ADD_REVIEW } from '../graphql/mutations';
 import * as yup from 'yup';
-import { Text } from './components/Text';
+import { Text } from './Text';
 
 type FormValues = {
   repoOwnerName: string;
   repoName: string;
   rating: string;
   review: string;
-}
+};
 
 interface FormInputProps {
   formik: FormikProps<FormValues>;
@@ -21,7 +21,7 @@ interface FormInputProps {
   placeholder: string;
 }
 
-const FormInput = ({ formik, placeholder, fieldName }: FormInputProps) => {
+function FormInput({ formik, placeholder, fieldName }: FormInputProps) {
   return (
     <>
       <TextInput
@@ -41,7 +41,7 @@ const FormInput = ({ formik, placeholder, fieldName }: FormInputProps) => {
       )}
     </>
   );
-};
+}
 
 const AddReviewFormSchema = yup.object().shape({
   repoOwnerName: yup.string().required(),
@@ -94,43 +94,23 @@ export const ReviewPage = () => {
     >
       {formik => (
         <View style={style('bg-white p-4 gap-2')}>
-          {error && <Text>{error}</Text>}
-          <FormInput fieldName='repoOwnerName' formik={formik} placeholder="Repository owner's name"/>
-          <TextInput
-            onChangeText={formik.handleChange('repoName')}
-            onBlur={formik.handleBlur('repoName')}
-            value={formik.values.repoName}
-            placeholder='Repository Name'
-            style={[
-              style('border border-gray-400 rounded-sm'),
-              formik.errors.repoName && formik.touched.repoName
-                ? style('border-red-300')
-                : null
-            ]}
+          {error && <Text style={style('text-red-600')}>{error}</Text>}
+          <FormInput
+            fieldName='repoOwnerName'
+            formik={formik}
+            placeholder="Repository owner's name"
           />
-          {formik.errors.repoName && formik.touched.repoName && (
-            <Text style={style('text-red-600')}>{formik.errors.repoName}</Text>
-          )}
-          <TextInput
-            onChangeText={formik.handleChange('rating')}
-            onBlur={formik.handleBlur('rating')}
-            value={formik.values.rating}
-            placeholder='Rating between 0 and 100'
-            style={style('border border-gray-400 rounded-sm')}
+          <FormInput
+            fieldName='repoName'
+            formik={formik}
+            placeholder='Name of the repository'
           />
-          {formik.errors.rating && formik.touched.rating && (
-            <Text style={style('text-red-600')}>{formik.errors.rating}</Text>
-          )}
-          <TextInput
-            onChangeText={formik.handleChange('review')}
-            onBlur={formik.handleBlur('review')}
-            value={formik.values.review}
-            placeholder='Review'
-            style={style('border border-gray-400 rounded-sm')}
+          <FormInput
+            fieldName='rating'
+            formik={formik}
+            placeholder='Rating from 0 to 100'
           />
-          {formik.errors.review && formik.touched.review && (
-            <Text style={style('text-red-600')}>{formik.errors.review}</Text>
-          )}
+          <FormInput fieldName='review' formik={formik} placeholder='Review' />
           <View style={style('bg-blue-500 p-2 rounded-sm')}>
             <Pressable onPress={formik.submitForm}>
               <Text style={style('text-white text-center font-bold')}>Submit</Text>

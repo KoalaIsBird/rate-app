@@ -33,19 +33,28 @@ const AppBar = () => {
         <Link to='/'>
           <Text style={styles.headerText}>Repositories</Text>
         </Link>
-        {data?.me && (
-          <Link to='/review'>
-            <Text style={styles.headerText}>Review</Text>
-          </Link>
-        )}
         {data?.me ? (
-          <Pressable onPress={logout}>
-            <Text style={styles.headerText}>Sign Out</Text>
-          </Pressable>
+          <>
+            <Link to='/review'>
+              <Text style={styles.headerText}>Review</Text>
+            </Link>
+            <Link to='/my-reviews'>
+              <Text style={styles.headerText}>My Reviews</Text>
+            </Link>
+
+            <Pressable onPress={logout}>
+              <Text style={styles.headerText}>Sign Out</Text>
+            </Pressable>
+          </>
         ) : (
-          <Link to='/signin'>
-            <Text style={styles.headerText}>Sign In</Text>
-          </Link>
+          <>
+            <Link to='/signin'>
+              <Text style={styles.headerText}>Sign In</Text>
+            </Link>
+            <Link to='/signup'>
+              <Text style={styles.headerText}>Sign Up</Text>
+            </Link>
+          </>
         )}
       </ScrollView>
     </View>

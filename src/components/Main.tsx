@@ -17,7 +17,9 @@ import * as yup from 'yup';
 import { object } from 'yup';
 import { useEffect, useState } from 'react';
 import { ADD_REVIEW } from '../graphql/mutations';
-import { ReviewPage } from '../ReviewPage';
+import { ReviewPage } from './ReviewPage';
+import { SignUpPage } from './SignUpPage';
+import { ReviewsFromUserPage } from './ReviewsFromUserPage';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +28,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.appBackground
   }
 });
-
 
 const Main = () => {
   return (
@@ -37,6 +38,8 @@ const Main = () => {
         <Route path='signin' element={<SignIn />} />
         <Route path='repositories/:id' element={<SingleRepositoryPage />} />
         <Route path='review' element={<ReviewPage />} />
+        <Route path='signup' element={<SignUpPage />} />
+        <Route path='my-reviews' element={<ReviewsFromUserPage />} />
         <Route path='*' element={<Navigate to='/' replace />} />
       </Routes>
     </View>

@@ -1,9 +1,26 @@
 import { gql } from '../__generated__/gql';
 
+const ReviewFieldsFragment = gql(`  
+fragment ReviewFields on Review {
+  id
+  text
+  rating
+  createdAt
+  repositoryId
+  repository {
+    fullName
+  }
+  user {
+    id
+    username
+  }
+}
+`);
+
 export const GET_REPOSITORIES = gql(`
 
-  query GetRepositories{
-    repositories {
+query GetRepositories($orderBy: AllRepositoriesOrderBy, $orderDirection: OrderDirection, $searchKeyword: String, $first: Int, $after: String){
+    repositories(orderBy: $orderBy, orderDirection: $orderDirection, searchKeyword: $searchKeyword, first: $first, after: $after) {
       edges {
         node {
           description
@@ -15,7 +32,15 @@ export const GET_REPOSITORIES = gql(`
           reviewCount
           ratingAverage
           id
+          
+
         }
+        cursor 
+      }
+      pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
       }
     }
   }
@@ -23,16 +48,26 @@ export const GET_REPOSITORIES = gql(`
 `);
 
 export const ME = gql(`
-  query GetMe{
+  query GetMe($includeReviews: Boolean = false){
     me {
       id
       username
+      reviews @include(if: $includeReviews) {
+        edges {
+          node {
+            ...ReviewFields
+          }
+        }
+      }
+
     }
   }
+
+
 `);
 
 export const GET_REPO = gql(`
-  query GetRepository($repositoryId: ID!) {
+  query GetRepository($repositoryId: ID!, $after: String, $first: Int ) {
   repository(id: $repositoryId) {
     description
     forksCount
@@ -45,8 +80,21 @@ export const GET_REPO = gql(`
     reviewCount
     stargazersCount
     url
+    reviews(after: $after, first: $first) {
+      edges {
+        node {
+          ...ReviewFields
+        }
+        cursor
+      }pageInfo {
+       endCursor
+       startCursor
+       hasNextPage 
+      }
+    }
   }
 }
+
   `);
 export const GET_REVIEWS = gql(`
 query GetReviews($id: ID!){
@@ -63,14 +111,5 @@ query GetReviews($id: ID!){
   }
 }
 
-fragment ReviewFields on Review {
-          id
-          text
-          rating
-          createdAt
-          user {
-            id
-            username
-          }
-        }
+
 `);
